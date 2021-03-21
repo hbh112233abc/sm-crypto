@@ -95,7 +95,7 @@ class Utils
      *
      * @return string
      */
-    public function parseUtf8StringToHex($input)
+    public static function parseUtf8StringToHex($input)
     {
         return bin2hex($input);
 
@@ -179,7 +179,7 @@ class Utils
      *
      * @return string
      */
-    public function arrayToHex($arr)
+    public static function arrayToHex($arr)
     {
         $words      = [];
         $j          = 0;
@@ -208,7 +208,7 @@ class Utils
      *
      * @return string
      */
-    public function arrayToUtf8($arr)
+    public static function arrayToUtf8($arr)
     {
         $words      = [];
         $j          = 0;
@@ -238,7 +238,7 @@ class Utils
      *
      * @return array
      */
-    public function hexToArray($hexStr)
+    public static function hexToArray($hexStr)
     {
         $words        = [];
         $hexStrLength = strlen($hexStr);
@@ -262,7 +262,7 @@ class Utils
      *
      * @return string
      */
-    public function str2ascii($str)
+    public static function str2ascii($str)
     {
         $str    = mb_convert_encoding($str, 'UTF-8');
         $result = '';
@@ -281,7 +281,7 @@ class Utils
      *
      * @return string
      */
-    public function ascii2str($ascii)
+    public static function ascii2str($ascii)
     {
         $ascArr = str_split(strtolower($ascii), 2);
         $str    = '';
