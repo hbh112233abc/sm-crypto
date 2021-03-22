@@ -14,7 +14,7 @@
             "bingher\\sm\\": "src/"
         },
         "files":[
-            "src/sm2/utils.php"
+            "src/sm2/Utils.php"
         ]
     },
     "require": {

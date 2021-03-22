@@ -40,7 +40,10 @@ function generateECParam()
     $gyHex = 'BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0';
     $G     = $curve->decodePointHex('04' . $gxHex . $gyHex);
 
-    $n = gmp_init('FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123', 16);
+    $n = gmp_init(
+        'FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123',
+        16
+    );
 
     return [$curve, $G, $n];
 }
@@ -144,7 +147,10 @@ function charCodeAt($str, $index)
  */
 function parseArrayBufferToHex($input)
 {
-    // return Array.prototype.map.call(new Uint8Array(input), x => ('00' + x.toString(16)).slice(-2)).join('')
+    // return Array.prototype.map.call(
+    //     new Uint8Array(input),
+    //     x => ('00' + x.toString(16)).slice(-2)
+    // ).join('')
     return bin2hex($input);
 }
 
