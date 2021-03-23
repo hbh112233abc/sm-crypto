@@ -12,7 +12,10 @@
     "autoload": {
         "psr-4": {
             "bingher\\sm\\": "src/"
-        }
+        },
+        "files":[
+            "src/sm2/Utils.php"
+        ]
     },
     "require": {
         "php":">=5.6"

@@ -104,7 +104,8 @@ class ECCurveFp
      */
     public function decodePointHex($s)
     {
-        switch (intval(substr($s, 0, 2), 16)) {
+		$c = intval(substr($s,0,2),16);
+        switch ($c) {
             // 第一个字节
             case 0:
                 return $this->infinity;
@@ -118,12 +119,13 @@ class ECCurveFp
                 $len  = (strlen($s) - 2) / 2;
                 $xHex = substr($s, 2, $len);
                 $yHex = substr($s, $len + 2, $len);
-
-                return new ECPointFp(
+                $point = new ECPointFp(
                     $this,
                     $this->fromBigInteger(gmp_init($xHex, 16)),
                     $this->fromBigInteger(gmp_init($yHex, 16))
-                );
+				);
+				print_r($point);
+				return $point;
             default:
                 // 不支持
                 return null;

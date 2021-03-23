@@ -321,21 +321,21 @@ class SM3Digest
           throw new \Exception('sm2: The Length of userId Must Less Than 8192!');
       }
 
-      $userId = _.parseUtf8StringToHex($userId);
+      $userId = parseUtf8StringToHex($userId);
       $len = strlen($userId) * 4;
     }
     $this->update(($len >> 8 & 0x00ff));
     $this->update(($len & 0x00ff));
     if ($userId) {
-      $userIdWords = _.hexToArray($userId);
+      $userIdWords = hexToArray($userId);
       $this->blockUpdate($userIdWords, 0, count($userIdWords));
     }
-    $aWords = _.hexToArray(_.leftPad(gmp_strval(gmp_init($g->curve->a),16), 64));
-    $bWords = _.hexToArray(_.leftPad(gmp_strval(gmp_init($g->curve->b),16), 64));
-    $gxWords = _.hexToArray(_.leftPad(gmp_strval(gmp_init($g->getX()),16), 64));
-    $gyWords = _.hexToArray(_.leftPad(gmp_strval(gmp_init($g->getY()),16), 64));
-    $pxWords = _.hexToArray(substr($publicKey,0, 64));
-    $pyWords = _.hexToArray(substr($publicKey,64, 64));
+    $aWords = hexToArray(leftPad(gmp_strval(gmp_init($g->curve->a),16), 64));
+    $bWords = hexToArray(leftPad(gmp_strval(gmp_init($g->curve->b),16), 64));
+    $gxWords = hexToArray(leftPad(gmp_strval(gmp_init($g->getX()),16), 64));
+    $gyWords = hexToArray(leftPad(gmp_strval(gmp_init($g->getY()),16), 64));
+    $pxWords = hexToArray(substr($publicKey,0, 64));
+    $pyWords = hexToArray(substr($publicKey,64, 64));
     $this->blockUpdate($aWords, 0, count($aWords));
     $this->blockUpdate($bWords, 0, count($bWords));
     $this->blockUpdate($gxWords, 0, count($gxWords));
