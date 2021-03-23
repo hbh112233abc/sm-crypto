@@ -29,9 +29,18 @@ function generateECParam()
 {
     global $curve, $G, $n;
     //椭圆曲线参数
-    $p = gmp_init('FFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF', 16);
-    $a = gmp_init('FFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC', 16);
-    $b = gmp_init('5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93', 16);
+    $p = gmp_init(
+        'FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF',
+        16
+    );
+    $a = gmp_init(
+        'FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC',
+        16
+    );
+    $b = gmp_init(
+        '28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93',
+        16
+    );
     //椭圆曲线
     $curve = new ECCurveFp($p, $a, $b);
 
@@ -59,20 +68,34 @@ function generateKeyPairHex()
     if (is_null($curve)) {
         generateECParam();
     }
+
     // 随机数
-    $rng        = gmp_random_bits(16);
-    $d          = gmp_init(strlen(gmp_strval($n)), $rng);
-    $d          = gmp_mod($d, gmp_sub($n, gmp_init(1)));
-    $d          = gmp_add($d, gmp_init(1));
+    $d       = gmp_random_bits(256);
+    $nSubOne = gmp_sub($n, gmp_init(1));
+    $d       = gmp_mod($d, $nSubOne);
+    $d       = gmp_add($d, gmp_init(1));
+
     $privateKey = leftPad(gmp_strval($d, 16), 64);
 
     // P = dG，p 为公钥，d 为私钥
     $P         = $G->multiply($d);
-    $Px        = leftPad(gmp_strval(gmp_init($P->getX()), 16), 64);
-    $Py        = leftPad(gmp_strval(gmp_init($P->getY()), 16), 64);
+    $Px        = leftPad(gmp_strval($P->getX()->toBigInteger(), 16), 64);
+    $Py        = leftPad(gmp_strval($P->getY()->toBigInteger(), 16), 64);
     $publicKey = '04' . $Px . $Py;
 
     return [$privateKey, $publicKey];
+}
+
+/**
+ * 获取GMP数值字节长度
+ *
+ * @param GMP $n GMP 数值
+ *
+ * @return int    字节长度
+ */
+function gmp_bit_length($n)
+{
+    return strlen(gmp_strval($n, 2));
 }
 
 /**

@@ -42,10 +42,10 @@ class ECPointFp
     /**
      * 构造函数
      *
-     * @param ECCurveFp $curve 曲线对象
-     * @param mixed     $x     x值
-     * @param mixed     $y     y值
-     * @param mixed     $z     z值
+     * @param ECCurveFp        $curve 曲线对象
+     * @param ECFieldElementFp $x     x值
+     * @param ECFieldElementFp $y     y值
+     * @param GMP              $z     z值
      *
      * @return self
      */
@@ -80,7 +80,7 @@ class ECPointFp
         return $this->curve->fromBigInteger(
             gmp_mod(
                 gmp_mul(
-                    gmp_init($this->x),
+                    $this->x->toBigInteger(),
                     $this->zinv
                 ),
                 $this->curve->q
@@ -102,7 +102,7 @@ class ECPointFp
         return $this->curve->fromBigInteger(
             gmp_mod(
                 gmp_mul(
-                    gmp_init($this->y),
+                    $this->y->toBigInteger(),
                     $this->zinv
                 ),
                 $this->curve->q
@@ -134,7 +134,7 @@ class ECPointFp
         $u = gmp_sub(
             gmp_mul(gmp_init($other->y), $this->z),
             gmp_mod(
-                gmp_mul(gmp_init($this->y), $other->z),
+                gmp_mul($this->y->toBigInteger(), $other->z),
                 $this->curve->q
             )
         );
@@ -145,7 +145,7 @@ class ECPointFp
         // v = x2 * z1 - x1 * z2
         $v = gmp_sub(
             gmp_mul(gmp_init($other->x), $this->z),
-            gmp_mod(gmp_mul(gmp_init($this->x), $other->z), $this->curve->q)
+            gmp_mod(gmp_mul($this->x->toBigInteger(), $other->z), $this->curve->q)
         );
 
         return (gmp_cmp($v, $this->zero) !== 0);
@@ -164,7 +164,7 @@ class ECPointFp
         }
         return (
             gmp_cmp($this->z, $this->zero) === 0
-            && gmp_cmp(gmp_init($this->y), $this->zero) !== 0
+            && gmp_cmp($this->y->toBigInteger(), $this->zero) !== 0
         );
     }
 
@@ -175,10 +175,15 @@ class ECPointFp
      */
     public function negate()
     {
+        $y = $this->y;
+        if ($this->y instanceof ECFieldElementFp) {
+            var_dump('y negate');
+            $y = $this->y->negate();
+        }
         return new ECPointFp(
             $this->curve,
             $this->x,
-            gmp_neg($this->y),
+            $y,
             $this->z
         );
     }
@@ -217,8 +222,8 @@ class ECPointFp
             return $this;
         }
 
-        $x1 = gmp_init($this->x);
-        $y1 = gmp_init($this->y);
+        $x1 = $this->x->toBigInteger();
+        $y1 = $this->y->toBigInteger();
         $z1 = $this->z;
         $x2 = gmp_init($b->x);
         $y2 = gmp_init($b->y);
@@ -376,15 +381,15 @@ class ECPointFp
         if ($this->isInfinity()) {
             return $this;
         }
-        if (!gmp_sign(gmp_init($this->y))) {
+        if (!gmp_sign($this->y->toBigInteger())) {
             return $this->curve->infinity;
         }
 
-        $x1 = gmp_init($this->x);
-        $y1 = gmp_init($this->y);
+        $x1 = $this->x->toBigInteger();
+        $y1 = $this->y->toBigInteger();
         $z1 = $this->z;
         $q  = $this->curve->q;
-        $a  = gmp_init($this->curve->a);
+        $a  = $this->curve->a->toBigInteger();
 
         $w1 = gmp_add(
             gmp_mul(
